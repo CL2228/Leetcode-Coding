@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/myosotissmacbookpro/Library/Mobile Documents/com~apple~CloudDocs/CS Job Hunting/leetcode/cpp_code/main.cpp
+iostream
+-
+vector
+-
+map
+-
+set
+-
+queue
+-
+stack
+-
+deque
+-
+
