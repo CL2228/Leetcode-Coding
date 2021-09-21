@@ -201,6 +201,55 @@ public class Leetcode0920 {
     }
 
 
+    // [M] 1660     Correct a Binary Tree
+    public TreeNode correctBinaryTree(TreeNode root) {
+        Deque<TreeNode> currL = new LinkedList<>();
+        Deque<TreeNode> nextL = new LinkedList<>();
+        currL.offerLast(root);
+
+        TreeNode target = null;
+        while (!currL.isEmpty()) {
+            TreeNode curr = currL.pollFirst();
+            if (curr.left != null) nextL.offerLast(curr.left);
+            if (curr.right != null) nextL.offerLast(curr.right);
+            if (!currL.isEmpty()) {
+                boolean found = false;
+                for (TreeNode n : currL) {
+                    if (curr.right == n) {
+                        target = curr;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            else {
+                Deque<TreeNode> swap = currL;
+                currL = nextL;
+                nextL = swap;
+            }
+        }
+
+        currL.clear();
+        currL.offerLast(root);
+        while (!currL.isEmpty()) {
+            TreeNode curr = currL.pollFirst();
+            if (curr.left != null && curr.left == target) {
+                curr.left = null;
+                break;
+            }
+            if (curr.right != null && curr.right == target) {
+                curr.right = null;
+                break;
+            }
+
+            if (curr.left != null) currL.offerLast(curr.left);
+            if (curr.right != null) currL.offerLast(curr.right);
+        }
+        return root;
+    }
+
+
 
 
 
