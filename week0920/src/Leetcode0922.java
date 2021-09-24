@@ -347,7 +347,6 @@ public class Leetcode0922 {
         Leetcode0922 lc = new Leetcode0922();
         int[] a = {1,1,1,2,2,2,3,3,3};
         int[] a1 = {1,2};
-
         System.out.println(lc.findNumberOfLIS(a));
     }
 }
