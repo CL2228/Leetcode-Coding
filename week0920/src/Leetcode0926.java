@@ -197,6 +197,144 @@ public class Leetcode0926 {
     }
 
 
+    // [M] 261      Graph Valid Tree
+    public boolean validTree(int n, int[][] edges) {
+        // this one uses union find (quick union, log time to union!)
+        // for a graph which is also a tree, the number of edges must be V - 1
+        if (edges.length != n - 1) return false;
+
+        // if the above condition satisfied, then if all the nodes are connected, it will be a tree
+        // using union find
+        int[] uf = new int[n];
+        for (int i = 0; i < n; i++) uf[i] = i;
+        for (int[] e : edges) union261(uf, e[0], e[1]);
+        for (int i = 1; i < n; i++)
+            if (getRoot261(uf, i) != getRoot261(uf,i - 1)) return false;
+        return true;
+    }
+    private int getRoot261(int[] uf, int i) {
+        while (i != uf[i]) i = uf[i];
+        return i;
+    }
+    private void union261(int[] uf, int p, int q) {
+        int i = getRoot261(uf, p);
+        int j = getRoot261(uf, q);
+        uf[i] = j;
+    }
+    public boolean validTree1(int n, int[][] edges) {
+        // this one uses DFS with hash sets
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer>[] data = new Set[n];
+
+        for (int i = 0; i < n; i++) data[i] = new HashSet<>();
+        for (int[] e : edges) {
+            data[e[0]].add(e[1]);
+            data[e[1]].add(e[0]);
+        }
+
+        if (!dfs261(data, -100, 0, visited)) return false;
+        if (visited.size() != n) return false;
+        return true;
+    }
+    private boolean dfs261(Set<Integer>[] data, int lastIdx, int idx, Set<Integer> visited) {
+        if (visited.contains(idx)) return false;
+        visited.add(idx);
+        Set<Integer> nextSteps = data[idx];
+        for (int step : nextSteps)
+            if (step != lastIdx && !dfs261(data, idx, step, visited)) return false;
+        return true;
+    }
+
+
+    // [M] 323      Number of Connected Components in an Undirected Graph
+    public int countComponents(int n, int[][] edges) {
+        // using DFS for every root entry
+
+        Set<Integer>[] graph = new Set[n];
+        for (int i = 0; i < n; i++) graph[i] = new HashSet<>();
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+        boolean[] visited = new boolean[n];
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                dfs323(graph, i, visited);
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+    private void dfs323(Set<Integer>[] graph, int idx, boolean[] visited) {
+//        System.out.println(idx);
+        visited[idx] = true;
+        Set<Integer> nextNodes = graph[idx];
+        for (int n : nextNodes)
+            if (!visited[n]) dfs323(graph, n, visited);
+    }
+    public int countComponents1(int n, int[][] edges) {
+        // using union find, with quick union
+        int[] uf = new int[n];
+        for (int i = 0; i < n; i++) uf[i] = i;
+        for (int[] e : edges) union323(uf, e[0], e[1]);
+
+        Set<Integer> cc = new HashSet<>();
+        for (int i : uf) cc.add(getRoot323(uf, i));
+        return cc.size();
+    }
+    private int getRoot323(int[] uf, int i){
+        while (uf[i] != i) i = uf[i];
+        return i;
+    }
+    private void union323(int[] uf, int p, int q) {
+        int i = getRoot323(uf, p);
+        int j = getRoot323(uf, q);
+        uf[i] = j;
+    }
+
+
+    // [M] 200      Number of Islands
+    public int numIslands(char[][] grid) {
+        int M = grid.length, N = grid[0].length;
+        boolean[][] visited = new boolean[M][N];
+        int cnt = 0;
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (!visited[i][j] && grid[i][j] == '1') {
+                    cnt++;
+                    bfs200(grid, visited, i, j);
+                }
+            }
+        }
+        return cnt;
+    }
+    private void bfs200(char[][] grid, boolean[][] visited, int r, int c) {
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{r, c});
+        visited[r][c] = true;
+        while (!queue.isEmpty()) {
+            int[] coordinate = queue.poll();
+            int tmpR = coordinate[0], tmpC = coordinate[1];
+            if (tmpR < grid.length - 1 && grid[tmpR + 1][tmpC] == '1' && !visited[tmpR+1][tmpC]) {
+                queue.offer(new int[]{tmpR + 1, tmpC});
+                visited[tmpR + 1][tmpC] = true;
+            }
+            if (tmpC < grid[0].length - 1 && grid[tmpR][tmpC + 1] == '1' && !visited[tmpR][tmpC + 1]) {
+                queue.offer(new int[]{tmpR, tmpC + 1});
+                visited[tmpR][tmpC + 1] = true;
+            }
+            if (tmpR > 0 && grid[tmpR - 1][tmpC] == '1' && !visited[tmpR - 1][tmpC]) {
+                queue.offer(new int[]{tmpR - 1, tmpC});
+                visited[tmpR - 1][tmpC] = true;
+            }
+            if (tmpC > 0 && grid[tmpR][tmpC - 1] == '1' && !visited[tmpR][tmpC - 1]) {
+                queue.offer(new int[]{tmpR, tmpC - 1});
+                visited[tmpR][tmpC - 1] = true;
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         Leetcode0926 lc = new Leetcode0926();
