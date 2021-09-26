@@ -280,7 +280,60 @@ public class Leetcode0925 {
 
     // [M] 74       Sort Colors
     public void sortColors(int[] nums) {
-        quickSort74(nums, 0, nums.length - 1);
+        int zeroR = 0, twoL = nums.length - 1;
+        int i = 0;
+        while (zeroR < nums.length && nums[zeroR] == 0) {
+            zeroR++;
+            i++;
+        }
+        if (zeroR >= nums.length) return;
+        while (twoL >= 0 && nums[twoL] == 2) twoL--;
+        if (twoL < 0) return;
+
+//        System.out.println(zeroR + "  " + twoL);
+
+        while (i <= twoL) {
+            if (nums[i] == 0) {
+                exch74(nums, i, zeroR);
+                zeroR++;
+                i++;
+//                System.out.println("tag:" + i + "  " + zeroR);
+            }
+            else if (nums[i] == 2) {
+                exch74(nums, i, twoL);
+                twoL--;
+            }
+            else {
+//                System.out.println("flag");
+                i++;
+            }
+        }
+    }
+    private void exch74(int[] a, int i, int j) {
+        int swap = a[i];
+        a[i] = a[j];
+        a[j] = swap;
+    }
+
+    private void qs3Way(int[] a, int lo, int hi) {
+        if (lo >= hi) return;
+        int v = a[lo];
+        int lt = lo, i = lo, gt = hi;
+        while (i <= gt) {
+            if (a[i] < v) {
+                exch74(a, i, lt);
+                lt++;
+                i++;
+            }
+            else if (a[i] > v) {
+                exch74(a, i, gt);
+                gt--;
+            }
+            else i++;
+        }
+        qs3Way(a, lo, lt - 1);
+        qs3Way(a, gt + 1, hi);
+
     }
     private void quickSort74(int[] a, int lo, int hi) {
         if (lo >= hi) return;
@@ -288,11 +341,6 @@ public class Leetcode0925 {
         exch74(a, lo, j);
         quickSort74(a, lo, j - 1);
         quickSort74(a, j + 1, hi);
-    }
-    private void exch74(int[] a, int i, int j) {
-        int swap = a[i];
-        a[i] = a[j];
-        a[j] = swap;
     }
     private int partition74(int[] a, int lo, int hi) {
         int i = lo, j = hi + 1;
@@ -376,9 +424,8 @@ public class Leetcode0925 {
 
     public static void main(String[] args) {
         Leetcode0925 lc = new Leetcode0925();
-        String q = "plasma";
-        String k = "altruism";
-        System.out.println(lc.minDistance(q, k));
+        int[] a = {0, 1};
+        lc.sortColors(a);
     }
 
 }
