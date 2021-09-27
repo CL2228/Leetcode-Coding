@@ -336,6 +336,143 @@ public class Leetcode0926 {
     }
 
 
+    // [M] 130      Surrounded Regions
+    public void solve(char[][] board) {
+        int M = board.length, N = board[0].length;
+        boolean[][] visited = new boolean[M][N];
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++)
+                if (!visited[r][c] && board[r][c] == 'O') bfs130(board, visited, r, c);
+        }
+    }
+    private void bfs130(char[][] board, boolean[][] visited, int r, int c) {
+        int M = board.length, N = board[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        List<int[]> list = new LinkedList<>();
+        int[] tmpArr = new int[]{r, c};
+        queue.add(tmpArr);
+        list.add(tmpArr);
+        visited[r][c] = true;
+        boolean toTurn = true;
+
+        while (!queue.isEmpty()) {
+            int[] headArr = queue.poll();
+            int tmpR = headArr[0], tmpC = headArr[1];
+
+            if (tmpR == 0 || tmpR == M - 1 || tmpC == 0 || tmpC == N - 1) toTurn = false;
+
+            if (tmpR > 0 && !visited[tmpR - 1][tmpC] && board[tmpR - 1][tmpC] == 'O') {
+                int[] tmpCo = new int[]{tmpR - 1, tmpC};
+                visited[tmpR - 1][tmpC] = true;
+                queue.offer(tmpCo);
+                list.add(tmpCo);
+            }
+
+            if (tmpR < M - 1 && !visited[tmpR + 1][tmpC] && board[tmpR + 1][tmpC] == 'O') {
+                int[] tmpCo = new int[]{tmpR + 1, tmpC};
+                visited[tmpR + 1][tmpC] = true;
+
+                queue.offer(tmpCo);
+                list.add(tmpCo);
+            }
+
+            if (tmpC > 0 && !visited[tmpR][tmpC - 1] && board[tmpR][tmpC - 1] == 'O') {
+                int[] tmpCo = new int[]{tmpR, tmpC - 1};
+                visited[tmpR][tmpC + 1] = true;
+                queue.offer(tmpCo);
+                list.add(tmpCo);
+            }
+
+            if (tmpC < N - 1 && !visited[tmpR][tmpC + 1] && board[tmpR][tmpC + 1] == 'O') {
+                int[] tmpCo = new int[]{tmpR, tmpC + 1};
+                visited[tmpR][tmpC + 1] = true;
+                queue.offer(tmpCo);
+                list.add(tmpCo);
+            }
+        }
+        if (toTurn)
+            for (int[] coor : list) board[coor[0]][coor[1]] = 'X';
+    }
+
+
+    // [M] 286      Wall and Gates
+    public void wallsAndGates(int[][] rooms) {
+        int M = rooms.length, N = rooms[0].length;
+        Queue<int[]> coordinates = new LinkedList<>();
+        boolean[][] visited = new boolean[M][N];
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++)
+                if (rooms[r][c] == 0) coordinates.add(new int[]{r, c});
+        }
+        int distance = 0;
+        while (!coordinates.isEmpty()) {
+            int levelSize = coordinates.size();
+            for (int i = 0; i < levelSize; i++) {
+                int[] tmpCoor = coordinates.poll();
+                int tmpR = tmpCoor[0], tmpC = tmpCoor[1];
+                if (distance < rooms[tmpR][tmpC]) rooms[tmpR][tmpC] = distance;
+
+                if (tmpR > 0 && !visited[tmpR - 1][tmpC] && rooms[tmpR - 1][tmpC] > 0) {
+                    visited[tmpR - 1][tmpC] = true;
+                    coordinates.offer(new int[]{tmpR - 1, tmpC});
+                }
+                if (tmpR < M - 1 && !visited[tmpR + 1][tmpC] && rooms[tmpR + 1][tmpC] > 0) {
+                    visited[tmpR + 1][tmpC] = true;
+                    coordinates.offer(new int[]{tmpR + 1, tmpC});
+                }
+                if (tmpC > 0 && !visited[tmpR][tmpC - 1] && rooms[tmpR][tmpC - 1] > 0) {
+                    visited[tmpR][tmpC - 1] = true;
+                    coordinates.offer(new int[]{tmpR, tmpC - 1});
+                }
+                if (tmpC < N - 1 && !visited[tmpR][tmpC + 1] && rooms[tmpR][tmpC + 1] > 0) {
+                    visited[tmpR][tmpC + 1] = true;
+                    coordinates.offer(new int[]{tmpR, tmpC + 1});
+                }
+            }
+            distance++;
+        }
+    }
+    private void bfs286(int[][] rooms, int r, int c) {
+        // this version uses single source BFS, so it sucks
+
+        int M = rooms.length, N = rooms[0].length;
+        boolean[][] visited = new boolean[M][N];
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{r, c});
+        visited[r][c] = true;
+        int dist = 0;
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+
+            for (int i = 0; i < levelSize; i++) {
+                int[] tmpCoor = queue.poll();
+                int tmpR = tmpCoor[0], tmpC = tmpCoor[1];
+                if (rooms[tmpR][tmpC] > dist) rooms[tmpR][tmpC] = dist;
+
+                if (tmpR > 0 && !visited[tmpR - 1][tmpC] && rooms[tmpR - 1][tmpC] > 0) {
+                    visited[tmpR - 1][tmpC] = true;
+                    queue.offer(new int[]{tmpR - 1, tmpC});
+                }
+                if (tmpR < M - 1 && !visited[tmpR + 1][tmpC] && rooms[tmpR + 1][tmpC] > 0) {
+                    visited[tmpR + 1][tmpC] = true;
+                    queue.offer(new int[]{tmpR + 1, tmpC});
+                }
+                if (tmpC > 0 && !visited[tmpR][tmpC - 1] && rooms[tmpR][tmpC - 1] > 0) {
+                    visited[tmpR][tmpC - 1] = true;
+                    queue.offer(new int[]{tmpR, tmpC - 1});
+                }
+                if (tmpC < N - 1 && !visited[tmpR][tmpC + 1] && rooms[tmpR][tmpC + 1] > 0) {
+                    visited[tmpR][tmpC + 1] = true;
+                    queue.offer(new int[]{tmpR, tmpC + 1});
+                }
+            }
+            dist++;
+        }
+    }
+
+
     public static void main(String[] args) {
         Leetcode0926 lc = new Leetcode0926();
         String a = "bbbab";

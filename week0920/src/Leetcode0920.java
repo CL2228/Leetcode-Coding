@@ -194,7 +194,6 @@ public class Leetcode0920 {
     }
     private void helper114(TreeNode curr, List<TreeNode> list) {
         if (curr == null) return;
-
         list.add(curr);
         helper114(curr.left, list);
         helper114(curr.right, list);
