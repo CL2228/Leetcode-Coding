@@ -473,6 +473,128 @@ public class Leetcode0926 {
     }
 
 
+    // [H] 317      Shortest Distance from All Buildings
+    public int shortestDistance(int[][] grid) {
+        int M = grid.length, N = grid[0].length;
+        int[][] distMatrix = new int[M][N];
+
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++) {
+                if (grid[r][c] == 1) {
+                    boolean[][] visited = new boolean[M][N];
+                    int[][] tmpDis = new int[M][N];
+                    for (int[] td : tmpDis) Arrays.fill(td, Integer.MAX_VALUE);
+                    Queue<int[]> queue = new LinkedList<>();
+                    queue.add(new int[]{r, c});
+                    int dist = 0;
+
+                    while (!queue.isEmpty()) {
+                        int levelSize = queue.size();
+                        for (int i = 0; i < levelSize; i++) {
+                            int[] tmpCoor = queue.poll();
+                            int tmpR = tmpCoor[0], tmpC = tmpCoor[1];
+
+                            tmpDis[tmpR][tmpC] = dist;
+
+                            if (tmpR > 0 && !visited[tmpR - 1][tmpC] && grid[tmpR - 1][tmpC] < 1 && distMatrix[tmpR - 1][tmpC] < Integer.MAX_VALUE) {
+                                visited[tmpR - 1][tmpC] = true;
+                                queue.offer(new int[]{tmpR - 1, tmpC});
+                            }
+                            if (tmpR < M - 1 && !visited[tmpR + 1][tmpC] && grid[tmpR + 1][tmpC] < 1 && distMatrix[tmpR + 1][tmpC] < Integer.MAX_VALUE) {
+                                visited[tmpR + 1][tmpC] = true;
+                                queue.offer(new int[]{tmpR + 1, tmpC});
+                            }
+                            if (tmpC > 0 && !visited[tmpR][tmpC - 1] && grid[tmpR][tmpC - 1] < 1 && distMatrix[tmpR][tmpC - 1] < Integer.MAX_VALUE) {
+                                visited[tmpR][tmpC - 1] = true;
+                                queue.offer(new int[]{tmpR, tmpC - 1});
+                            }
+                            if (tmpC < N - 1 && !visited[tmpR][tmpC + 1] && grid[tmpR][tmpC + 1] < 1 && distMatrix[tmpR][tmpC + 1] < Integer.MAX_VALUE) {
+                                visited[tmpR][tmpC + 1] = true;
+                                queue.offer(new int[]{tmpR, tmpC + 1});
+                            }
+                        }
+                        dist++;
+                    }
+
+                    for (int i = 0; i < M; i++) {
+                        for (int j = 0; j < N; j++) {
+                            if (grid[i][j] < 1 && distMatrix[i][j] < Integer.MAX_VALUE) {
+                                if (tmpDis[i][j] == Integer.MAX_VALUE) distMatrix[i][j] = Integer.MAX_VALUE;
+                                else distMatrix[i][j] += tmpDis[i][j];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        int minDist = Integer.MAX_VALUE;
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++) {
+                if (grid[r][c] == 0) minDist = Math.min(minDist, distMatrix[r][c]);
+            }
+        }
+        if (minDist == Integer.MAX_VALUE) return -1;
+        else return minDist;
+    }
+
+
+    // [H] 296      Best Meeting Point
+    public int minTotalDistance(int[][] grid) {
+        int M = grid.length, N = grid[0].length;
+        int[][] dist = new int[M][N];
+
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++) {
+                if (grid[r][c] == 1) {
+
+                    boolean[][] visited = new boolean[M][N];
+                    Queue<int[]> queue = new LinkedList<>();
+                    queue.offer(new int[]{r, c});
+                    visited[r][c] = true;
+                    int tmpDist = 0;
+
+                    while (!queue.isEmpty()) {
+                        int levelSize = queue.size();
+                        for (int i = 0; i < levelSize; i++) {
+                            int[] tmpCoor = queue.poll();
+                            int tmpR = tmpCoor[0], tmpC = tmpCoor[1];
+                            dist[tmpR][tmpC] += tmpDist;
+
+                            if (tmpR > 0 && !visited[tmpR - 1][tmpC]) {
+                                visited[tmpR - 1][tmpC] = true;
+                                queue.offer(new int[]{tmpR - 1, tmpC});
+                            }
+                            if (tmpR < M - 1 && !visited[tmpR + 1][tmpC]) {
+                                visited[tmpR + 1][tmpC] = true;
+                                queue.offer(new int[]{tmpR + 1, tmpC});
+                            }
+                            if (tmpC > 0 && !visited[tmpR][tmpC - 1]) {
+                                visited[tmpR][tmpC - 1] = true;
+                                queue.offer(new int[]{tmpR, tmpC - 1});
+                            }
+                            if (tmpC < N - 1 && !visited[tmpR][tmpC + 1]) {
+                                visited[tmpR][tmpC + 1] = true;
+                                queue.offer(new int[]{tmpR, tmpC + 1});
+                            }
+                        }
+                        tmpDist++;
+                    }
+                }
+            }
+        }
+//        for (int [] di : dist) {
+//            for (int d : di) System.out.print(d + " ");
+//            System.out.println();
+//        }
+        int minDist = Integer.MAX_VALUE;
+        for (int r = 0; r < M; r++)
+            for (int c = 0; c < N; c++) minDist = Math.min(minDist, dist[r][c]);
+        return minDist;
+    }
+
+
     public static void main(String[] args) {
         Leetcode0926 lc = new Leetcode0926();
         String a = "bbbab";
