@@ -408,22 +408,28 @@ public class Leetcode1004 {
     public int countArrangement(int n) {
         int[] res = {0};
         Set<Integer> preSet = new HashSet<>();
+        boolean[] visited = new boolean[n + 1];
         for (int i = 1; i <= n; i++) preSet.add(i);
-        backtrack526(preSet, 1, res);
+        backtrack526(visited, 1, res, n);
         return res[0];
     }
-    private void backtrack526(Set<Integer> preSet, int index, int[] res) {
-        if (preSet.isEmpty()) {
+    private void backtrack526(boolean[] visited, int index, int[] res, int n) {
+        if (index > n) {
             res[0]++;
             return;
         }
-        Set<Integer> nextSet = new HashSet<>(preSet);
-        for (int key : preSet) {
-            if (key % index == 0 || index % key == 0) {
-                nextSet.remove(key);
-                backtrack526(nextSet, index + 1, res);
-                nextSet.add(key);
+        for (int i = 1; i < visited.length; i++) {
+            if (!visited[i] && (i % index == 0 || index % i == 0)) {
+                visited[i] = true;
+                backtrack526(visited, index + 1, res, n);
+
+                visited[i] = false;
             }
+//            if (key % index == 0 || index % key == 0) {
+//                nextSet.remove(key);
+//                backtrack526(nextSet, index + 1, res);
+//                nextSet.add(key);
+//            }
         }
     }
 
